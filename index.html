@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RestaurantePRO — Gestão Completa</title>
+<link rel="stylesheet" href="style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="logo">
+      <i class="fa-solid fa-utensils"></i>
+      <span class="logo-text">RestaurantePRO</span>
+    </div>
+    <button class="sidebar-toggle" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">PRINCIPAL</div>
+    <a class="nav-item active" onclick="showScreen('dashboard')" data-screen="dashboard">
+      <i class="fa-solid fa-chart-pie"></i><span>Dashboard</span>
+    </a>
+    <a class="nav-item" onclick="showScreen('pdv')" data-screen="pdv">
+      <i class="fa-solid fa-cash-register"></i><span>PDV / Caixa</span>
+    </a>
+    <a class="nav-item" onclick="showScreen('pedidos')" data-screen="pedidos">
+      <i class="fa-solid fa-receipt"></i><span>Pedidos</span>
+      <span class="badge">12</span>
+    </a>
+    <a class="nav-item" onclick="showScreen('mesas')" data-screen="mesas">
+      <i class="fa-solid fa-table-cells-large"></i><span>Mesas</span>
+    </a>
+
+    <div class="nav-section-label">OPERAÇÃO</div>
+    <a class="nav-item" onclick="showScreen('cardapio')" data-screen="cardapio">
+      <i class="fa-solid fa-book-open"></i><span>Cardápio</span>
+    </a>
+    <a class="nav-item" onclick="showScreen('entregas')" data-screen="entregas">
+      <i class="fa-solid fa-motorcycle"></i><span>Entregas</span>
+      <span class="badge badge-warn">5</span>
+    </a>
+    <a class="nav-item" onclick="showScreen('clientes')" data-screen="clientes">
+      <i class="fa-solid fa-users"></i><span>Clientes</span>
+    </a>
+
+    <div class="nav-section-label">GESTÃO</div>
+    <a class="nav-item" onclick="showScreen('estoque')" data-screen="estoque">
+      <i class="fa-solid fa-box-archive"></i><span>Estoque</span>
+      <span class="badge badge-danger">3</span>
+    </a>
+    <a class="nav-item" onclick="showScreen('financeiro')" data-screen="financeiro">
+      <i class="fa-solid fa-coins"></i><span>Financeiro</span>
+    </a>
+    <a class="nav-item" onclick="showScreen('relatorios')" data-screen="relatorios">
+      <i class="fa-solid fa-chart-bar"></i><span>Relatórios</span>
+    </a>
+    <a class="nav-item" onclick="showScreen('configuracoes')" data-screen="configuracoes">
+      <i class="fa-solid fa-gear"></i><span>Configurações</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="user-avatar">TF</div>
+    <div class="user-info">
+      <strong>Thales Fratar</strong>
+      <small>Administrador</small>
+    </div>
+    <i class="fa-solid fa-right-from-bracket logout-btn"></i>
+  </div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="main-content" id="mainContent">
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="mobile-menu-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+      <div class="breadcrumb" id="breadcrumb">Dashboard</div>
+    </div>
+    <div class="topbar-right">
+      <div class="topbar-time" id="topbarTime"></div>
+      <button class="topbar-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+      <button class="topbar-btn notif-btn">
+        <i class="fa-solid fa-bell"></i>
+        <span class="notif-dot"></span>
+      </button>
+      <div class="topbar-avatar">TF</div>
+    </div>
+  </header>
+
+  <!-- ===== DASHBOARD ===== -->
+  <section class="screen active" id="screen-dashboard">
+    <div class="screen-header">
+      <div>
+        <h1>Dashboard</h1>
+        <p class="screen-subtitle">Visão geral do restaurante — <span id="dashDate"></span></p>
+      </div>
+      <div class="screen-actions">
+        <select class="select-period">
+          <option>Hoje</option><option>Esta semana</option><option>Este mês</option>
+        </select>
+        <button class="btn btn-primary"><i class="fa-solid fa-download"></i> Exportar</button>
+      </div>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="kpi-grid">
+      <div class="kpi-card kpi-green">
+        <div class="kpi-icon"><i class="fa-solid fa-dollar-sign"></i></div>
+        <div class="kpi-body">
+          <div class="kpi-value">R$ 4.820,50</div>
+          <div class="kpi-label">Receita Hoje</div>
+          <div class="kpi-delta up"><i class="fa-solid fa-arrow-trend-up"></i> +12,4% vs ontem</div>
+        </div>
+      </div>
+      <div class="kpi-card kpi-blue">
+        <div class="kpi-icon"><i class="fa-solid fa-receipt"></i></div>
+        <div class="kpi-body">
+          <div class="kpi-value">143</div>
+          <div class="kpi-label">Pedidos Hoje</div>
+          <div class="kpi-delta up"><i class="fa-solid fa-arrow-trend-up"></i> +8 vs ontem</div>
+        </div>
+      </div>
+      <div class="kpi-card kpi-orange">
+        <div class="kpi-icon"><i class="fa-solid fa-table-cells-large"></i></div>
+        <div class="kpi-body">
+          <div class="kpi-value">18 / 24</div>
+          <div class="kpi-label">Mesas Ocupadas</div>
+          <div class="kpi-delta"><i class="fa-solid fa-circle"></i> 75% de ocupação</div>
+        </div>
+      </div>
+      <div class="kpi-card kpi-purple">
+        <div class="kpi-icon"><i class="fa-solid fa-ticket"></i></div>
+        <div class="kpi-body">
+          <div class="kpi-value">R$ 33,71</div>
+          <div class="kpi-label">Ticket Médio</div>
+          <div class="kpi-delta up"><i class="fa-solid fa-arrow-trend-up"></i> +2,1% vs ontem</div>
+        </div>
+      </div>
+      <div class="kpi-card kpi-red">
+        <div class="kpi-icon"><i class="fa-solid fa-motorcycle"></i></div>
+        <div class="kpi-body">
+          <div class="kpi-value">27</div>
+          <div class="kpi-label">Entregas Ativas</div>
+          <div class="kpi-delta"><i class="fa-solid fa-clock"></i> Tempo médio: 32min</div>
+        </div>
+      </div>
+      <div class="kpi-card kpi-teal">
+        <div class="kpi-icon"><i class="fa-solid fa-star"></i></div>
+        <div class="kpi-body">
+          <div class="kpi-value">4,7</div>
+          <div class="kpi-label">Avaliação Média</div>
+          <div class="kpi-delta"><i class="fa-solid fa-comment"></i> 38 avaliações hoje</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="charts-row">
+      <div class="chart-card large">
+        <div class="chart-header">
+          <h3>Receita dos Últimos 7 Dias</h3>
+          <div class="chart-legend">
+            <span><i style="background:#f97316"></i> Receita</span>
+            <span><i style="background:#3b82f6"></i> Pedidos</span>
+          </div>
+        </div>
+        <canvas id="chartReceita"></canvas>
+      </div>
+      <div class="chart-card small">
+        <div class="chart-header"><h3>Vendas por Categoria</h3></div>
+        <canvas id="chartCategoria"></canvas>
+        <div class="donut-legend" id="donutLegend"></div>
+      </div>
+    </div>
+
+    <!-- Bottom Row -->
+    <div class="bottom-row">
+      <!-- Recent Orders -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Pedidos Recentes</h3>
+          <a onclick="showScreen('pedidos')" class="link-action">Ver todos</a>
+        </div>
+        <table class="data-table">
+          <thead><tr><th>#</th><th>Mesa / Entrega</th><th>Itens</th><th>Total</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td><strong>#1042</strong></td><td>Mesa 7</td><td>3 itens</td><td>R$ 87,00</td><td><span class="status-badge prep">Em Preparo</span></td></tr>
+            <tr><td><strong>#1041</strong></td><td>Delivery — João S.</td><td>2 itens</td><td>R$ 54,50</td><td><span class="status-badge transit">Em Trânsito</span></td></tr>
+            <tr><td><strong>#1040</strong></td><td>Mesa 3</td><td>5 itens</td><td>R$ 142,00</td><td><span class="status-badge done">Concluído</span></td></tr>
+            <tr><td><strong>#1039</strong></td><td>Mesa 12</td><td>1 item</td><td>R$ 28,00</td><td><span class="status-badge new">Novo</span></td></tr>
+            <tr><td><strong>#1038</strong></td><td>Delivery — Ana P.</td><td>4 itens</td><td>R$ 96,00</td><td><span class="status-badge done">Concluído</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Top Products & Alerts -->
+      <div class="side-cards">
+        <div class="card">
+          <div class="card-header"><h3>Top Produtos</h3></div>
+          <div class="top-products">
+            <div class="tp-item"><div class="tp-rank">1</div><div class="tp-info"><strong>X-Burguer Especial</strong><small>87 vendas</small></div><div class="tp-bar"><div style="width:87%"></div></div></div>
+            <div class="tp-item"><div class="tp-rank">2</div><div class="tp-info"><strong>Pizza Margherita</strong><small>64 vendas</small></div><div class="tp-bar"><div style="width:64%"></div></div></div>
+            <div class="tp-item"><div class="tp-rank">3</div><div class="tp-info"><strong>Suco de Laranja</strong><small>52 vendas</small></div><div class="tp-bar"><div style="width:52%"></div></div></div>
+            <div class="tp-item"><div class="tp-rank">4</div><div class="tp-info"><strong>Frango Grelhado</strong><small>41 vendas</small></div><div class="tp-bar"><div style="width:41%"></div></div></div>
+            <div class="tp-item"><div class="tp-rank">5</div><div class="tp-info"><strong>Brownie</strong><small>38 vendas</small></div><div class="tp-bar"><div style="width:38%"></div></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><h3>Alertas</h3></div>
+          <div class="alerts-list">
+            <div class="alert-item alert-danger"><i class="fa-solid fa-triangle-exclamation"></i><div><strong>Estoque crítico</strong><small>Queijo Mussarela: 2kg restantes</small></div></div>
+            <div class="alert-item alert-warn"><i class="fa-solid fa-clock"></i><div><strong>Pedido atrasado</strong><small>#1035 — 48min sem saída</small></div></div>
+            <div class="alert-item alert-info"><i class="fa-solid fa-info-circle"></i><div><strong>Reserva às 20h</strong><small>Mesa 8 — 6 pessoas</small></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PDV / CAIXA ===== -->
+  <section class="screen" id="screen-pdv">
+    <div class="screen-header">
+      <div><h1>PDV — Ponto de Venda</h1><p class="screen-subtitle">Atendimento rápido no caixa</p></div>
+      <div class="screen-actions">
+        <button class="btn btn-outline"><i class="fa-solid fa-rotate-left"></i> Sangria</button>
+        <button class="btn btn-outline"><i class="fa-solid fa-plus"></i> Nova Mesa</button>
+        <button class="btn btn-primary"><i class="fa-solid fa-cash-register"></i> Abrir Caixa</button>
+      </div>
+    </div>
+
+    <div class="pdv-layout">
+      <!-- Product Grid -->
+      <div class="pdv-products">
+        <div class="pdv-search-bar">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" placeholder="Buscar produto, código..." id="pdvSearch" oninput="filterPdvProducts()">
+        </div>
+        <div class="pdv-categories">
+          <button class="cat-btn active" onclick="filterCat(this,'all')">Todos</button>
+          <button class="cat-btn" onclick="filterCat(this,'lanches')">Lanches</button>
+          <button class="cat-btn" onclick="filterCat(this,'pizzas')">Pizzas</button>
+          <button class="cat-btn" onclick="filterCat(this,'bebidas')">Bebidas</button>
+          <button class="cat-btn" onclick="filterCat(this,'pratos')">Pratos</button>
+          <button class="cat-btn" onclick="filterCat(this,'sobremesas')">Sobremesas</button>
+        </div>
+        <div class="pdv-grid" id="pdvGrid"></div>
+      </div>
+
+      <!-- Cart -->
+      <div class="pdv-cart">
+        <div class="cart-header">
+          <h3><i class="fa-solid fa-cart-shopping"></i> Comanda</h3>
+          <div class="cart-meta">
+            <span class="cart-table-badge">Mesa <select id="cartMesa" class="inline-select"><option>1</option><option>2</option><option>3</option><option selected>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select></span>
+            <span class="cart-type-badge" id="cartTypeBadge">Local</span>
+          </div>
+        </div>
+        <div class="cart-items" id="cartItems"><p class="cart-empty"><i class="fa-solid fa-cart-shopping"></i><br>Nenhum item adicionado</p></div>
+        <div class="cart-obs">
+          <input type="text" placeholder="Observações / coupon..." class="obs-input">
+        </div>
+        <div class="cart-totals">
+          <div class="ct-row"><span>Subtotal</span><span id="cartSubtotal">R$ 0,00</span></div>
+          <div class="ct-row"><span>Taxa de serviço (10%)</span><span id="cartTax">R$ 0,00</span></div>
+          <div class="ct-row ct-discount"><span>Desconto</span><span>— R$ 0,00</span></div>
+          <div class="ct-row ct-total"><span>TOTAL</span><span id="cartTotal">R$ 0,00</span></div>
+        </div>
+        <div class="cart-payment">
+          <p class="payment-label">Forma de Pagamento</p>
+          <div class="payment-methods">
+            <button class="pay-btn active" onclick="selectPay(this)"><i class="fa-solid fa-money-bill-wave"></i> Dinheiro</button>
+            <button class="pay-btn" onclick="selectPay(this)"><i class="fa-brands fa-pix"></i> PIX</button>
+            <button class="pay-btn" onclick="selectPay(this)"><i class="fa-solid fa-credit-card"></i> Crédito</button>
+            <button class="pay-btn" onclick="selectPay(this)"><i class="fa-solid fa-credit-card"></i> Débito</button>
+          </div>
+        </div>
+        <button class="btn btn-success btn-lg btn-block" onclick="finalizarVenda()"><i class="fa-solid fa-check"></i> Finalizar Venda</button>
+        <button class="btn btn-ghost btn-block" onclick="limparCarrinho()"><i class="fa-solid fa-trash"></i> Limpar</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PEDIDOS ===== -->
+  <section class="screen" id="screen-pedidos">
+    <div class="screen-header">
+      <div><h1>Pedidos</h1><p class="screen-subtitle">Acompanhe todos os pedidos em tempo real</p></div>
+      <div class="screen-actions">
+        <div class="tabs">
+          <button class="tab active" onclick="filterPedidos('todos',this)">Todos</button>
+          <button class="tab" onclick="filterPedidos('novo',this)">Novos</button>
+          <button class="tab" onclick="filterPedidos('prep',this)">Preparo</button>
+          <button class="tab" onclick="filterPedidos('pronto',this)">Prontos</button>
+          <button class="tab" onclick="filterPedidos('entregue',this)">Entregues</button>
+        </div>
+        <button class="btn btn-primary" onclick="showModal('novoModal')"><i class="fa-solid fa-plus"></i> Novo Pedido</button>
+      </div>
+    </div>
+
+    <div class="kanban-board">
+      <div class="kanban-col">
+        <div class="kanban-col-header new-col"><i class="fa-solid fa-bell"></i> Novos <span class="col-count">3</span></div>
+        <div class="kanban-items" id="kNovos"></div>
+      </div>
+      <div class="kanban-col">
+        <div class="kanban-col-header prep-col"><i class="fa-solid fa-fire-burner"></i> Em Preparo <span class="col-count">5</span></div>
+        <div class="kanban-items" id="kPrep"></div>
+      </div>
+      <div class="kanban-col">
+        <div class="kanban-col-header ready-col"><i class="fa-solid fa-bell-concierge"></i> Prontos <span class="col-count">2</span></div>
+        <div class="kanban-items" id="kPronto"></div>
+      </div>
+      <div class="kanban-col">
+        <div class="kanban-col-header done-col"><i class="fa-solid fa-check-circle"></i> Entregues <span class="col-count">133</span></div>
+        <div class="kanban-items" id="kEntregue"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MESAS ===== -->
+  <section class="screen" id="screen-mesas">
+    <div class="screen-header">
+      <div><h1>Mesas</h1><p class="screen-subtitle">Layout do salão — 24 mesas</p></div>
+      <div class="screen-actions">
+        <div class="legend">
+          <span class="leg-item"><span class="leg-dot free"></span> Livre</span>
+          <span class="leg-item"><span class="leg-dot occ"></span> Ocupada</span>
+          <span class="leg-item"><span class="leg-dot res"></span> Reservada</span>
+        </div>
+        <button class="btn btn-primary" onclick="showModal('reservaModal')"><i class="fa-solid fa-calendar-plus"></i> Nova Reserva</button>
+      </div>
+    </div>
+
+    <div class="mesas-layout">
+      <div class="mesas-grid" id="mesasGrid"></div>
+      <div class="mesas-sidebar">
+        <div class="card" id="mesaDetailCard">
+          <div class="mesa-detail-placeholder"><i class="fa-solid fa-table-cells-large"></i><p>Selecione uma mesa para ver detalhes</p></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><h3>Reservas de Hoje</h3></div>
+          <div class="reservas-list">
+            <div class="reserva-item"><div class="res-time">19:00</div><div><strong>Carlos M.</strong><br><small>Mesa 5 — 4 pessoas</small></div><span class="status-badge new">Confirmada</span></div>
+            <div class="reserva-item"><div class="res-time">20:00</div><div><strong>Família Silva</strong><br><small>Mesa 8 — 6 pessoas</small></div><span class="status-badge new">Confirmada</span></div>
+            <div class="reserva-item"><div class="res-time">21:30</div><div><strong>Amanda R.</strong><br><small>Mesa 2 — 2 pessoas</small></div><span class="status-badge prep">Pendente</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CARDÁPIO ===== -->
+  <section class="screen" id="screen-cardapio">
+    <div class="screen-header">
+      <div><h1>Cardápio</h1><p class="screen-subtitle">Gerencie produtos, categorias e preços</p></div>
+      <div class="screen-actions">
+        <button class="btn btn-outline"><i class="fa-solid fa-tags"></i> Categorias</button>
+        <button class="btn btn-primary" onclick="showModal('produtoModal')"><i class="fa-solid fa-plus"></i> Novo Produto</button>
+      </div>
+    </div>
+
+    <div class="cardapio-layout">
+      <div class="cardapio-cats">
+        <div class="cat-card active-cat" onclick="selectCardapioCat(this,'Todos')"><i class="fa-solid fa-border-all"></i><span>Todos</span><small>48</small></div>
+        <div class="cat-card" onclick="selectCardapioCat(this,'Lanches')"><i class="fa-solid fa-burger"></i><span>Lanches</span><small>12</small></div>
+        <div class="cat-card" onclick="selectCardapioCat(this,'Pizzas')"><i class="fa-solid fa-pizza-slice"></i><span>Pizzas</span><small>8</small></div>
+        <div class="cat-card" onclick="selectCardapioCat(this,'Bebidas')"><i class="fa-solid fa-wine-glass"></i><span>Bebidas</span><small>14</small></div>
+        <div class="cat-card" onclick="selectCardapioCat(this,'Pratos')"><i class="fa-solid fa-plate-wheat"></i><span>Pratos</span><small>10</small></div>
+        <div class="cat-card" onclick="selectCardapioCat(this,'Sobremesas')"><i class="fa-solid fa-ice-cream"></i><span>Sobremesas</span><small>4</small></div>
+      </div>
+
+      <div class="cardapio-products-area">
+        <div class="search-filter-bar">
+          <div class="search-wrap"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Buscar produto..."></div>
+          <select class="select-period"><option>Todos os status</option><option>Ativo</option><option>Inativo</option></select>
+        </div>
+        <div class="cardapio-grid" id="cardapioGrid"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ENTREGAS ===== -->
+  <section class="screen" id="screen-entregas">
+    <div class="screen-header">
+      <div><h1>Entregas</h1><p class="screen-subtitle">Gestão de delivery e entregadores</p></div>
+      <div class="screen-actions">
+        <button class="btn btn-outline"><i class="fa-solid fa-motorcycle"></i> Entregadores</button>
+        <button class="btn btn-primary"><i class="fa-solid fa-plus"></i> Novo Pedido Delivery</button>
+      </div>
+    </div>
+
+    <div class="entregas-layout">
+      <div class="entregas-list-col">
+        <div class="entrega-status-tabs">
+          <button class="etab active" onclick="filterEntregas('aguardando',this)">Aguardando</button>
+          <button class="etab" onclick="filterEntregas('transito',this)">Em Trânsito</button>
+          <button class="etab" onclick="filterEntregas('entregue',this)">Entregues</button>
+        </div>
+        <div id="entregasList"></div>
+      </div>
+      <div class="entregas-map-col">
+        <div class="fake-map">
+          <div class="map-overlay-title"><i class="fa-solid fa-map-location-dot"></i> Mapa de Entregas</div>
+          <div class="map-pins" id="mapPins"></div>
+          <div class="map-bg-grid"></div>
+        </div>
+        <div class="entregadores-panel">
+          <h4>Entregadores Ativos</h4>
+          <div class="entregador-list">
+            <div class="entregador-card online"><div class="ent-avatar">MR</div><div><strong>Marcos R.</strong><small>2 entregas ativas</small></div><span class="ent-status online">Online</span></div>
+            <div class="entregador-card online"><div class="ent-avatar">PL</div><div><strong>Pedro L.</strong><small>1 entrega ativa</small></div><span class="ent-status online">Online</span></div>
+            <div class="entregador-card busy"><div class="ent-avatar">CS</div><div><strong>Carla S.</strong><small>3 entregas ativas</small></div><span class="ent-status busy">Ocupada</span></div>
+            <div class="entregador-card offline"><div class="ent-avatar">JM</div><div><strong>Jorge M.</strong><small>Offline</small></div><span class="ent-status off">Offline</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CLIENTES ===== -->
+  <section class="screen" id="screen-clientes">
+    <div class="screen-header">
+      <div><h1>Clientes</h1><p class="screen-subtitle">Base de clientes e programa de fidelidade</p></div>
+      <div class="screen-actions">
+        <button class="btn btn-outline"><i class="fa-solid fa-gift"></i> Fidelidade</button>
+        <button class="btn btn-primary" onclick="showModal('clienteModal')"><i class="fa-solid fa-user-plus"></i> Novo Cliente</button>
+      </div>
+    </div>
+
+    <div class="clientes-kpis">
+      <div class="mini-kpi"><strong>1.284</strong><span>Total de Clientes</span></div>
+      <div class="mini-kpi"><strong>312</strong><span>Ativos este mês</span></div>
+      <div class="mini-kpi"><strong>87</strong><span>Novos este mês</span></div>
+      <div class="mini-kpi"><strong>R$ 89,20</strong><span>Ticket médio / cliente</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="search-wrap"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Buscar cliente, telefone, e-mail..."></div>
+        <div style="display:flex;gap:8px">
+          <select class="select-period"><option>Todos</option><option>VIP</option><option>Frequente</option><option>Inativo</option></select>
+          <button class="btn btn-outline btn-sm"><i class="fa-solid fa-file-export"></i> Exportar</button>
+        </div>
+      </div>
+      <table class="data-table">
+        <thead><tr><th>Cliente</th><th>Telefone</th><th>Total Gasto</th><th>Pedidos</th><th>Última Visita</th><th>Nível</th><th>Ações</th></tr></thead>
+        <tbody id="clientesTable"></tbody>
+      </table>
+      <div class="table-pagination"><button class="btn btn-outline btn-sm">← Anterior</button><span>Página 1 de 14</span><button class="btn btn-outline btn-sm">Próxima →</button></div>
+    </div>
+  </section>
+
+  <!-- ===== ESTOQUE ===== -->
+  <section class="screen" id="screen-estoque">
+    <div class="screen-header">
+      <div><h1>Estoque</h1><p class="screen-subtitle">Controle de ingredientes e insumos</p></div>
+      <div class="screen-actions">
+        <button class="btn btn-outline"><i class="fa-solid fa-truck"></i> Fornecedores</button>
+        <button class="btn btn-outline"><i class="fa-solid fa-arrow-right-arrow-left"></i> Movimentações</button>
+        <button class="btn btn-primary" onclick="showModal('estoqueModal')"><i class="fa-solid fa-plus"></i> Entrada de Estoque</button>
+      </div>
+    </div>
+
+    <div class="estoque-kpis">
+      <div class="mini-kpi warn"><strong>3</strong><span>Itens Críticos</span></div>
+      <div class="mini-kpi"><strong>127</strong><span>Total de Itens</span></div>
+      <div class="mini-kpi"><strong>R$ 18.420</strong><span>Valor em Estoque</span></div>
+      <div class="mini-kpi"><strong>12</strong><span>Itens Abaixo do Mínimo</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="search-wrap"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Buscar ingrediente..."></div>
+        <div style="display:flex;gap:8px">
+          <select class="select-period"><option>Todas categorias</option><option>Carnes</option><option>Frios</option><option>Hortifrúti</option><option>Bebidas</option><option>Embalagens</option></select>
+          <select class="select-period"><option>Todos os status</option><option>Normal</option><option>Baixo</option><option>Crítico</option></select>
+        </div>
+      </div>
+      <table class="data-table">
+        <thead><tr><th>Ingrediente</th><th>Categoria</th><th>Qtde Atual</th><th>Mínimo</th><th>Unidade</th><th>Custo Unit.</th><th>Validade</th><th>Status</th></tr></thead>
+        <tbody id="estoqueTable"></tbody>
+      </table>
+      <div class="table-pagination"><button class="btn btn-outline btn-sm">← Anterior</button><span>Página 1 de 6</span><button class="btn btn-outline btn-sm">Próxima →</button></div>
+    </div>
+  </section>
+
+  <!-- ===== FINANCEIRO ===== -->
+  <section class="screen" id="screen-financeiro">
+    <div class="screen-header">
+      <div><h1>Financeiro</h1><p class="screen-subtitle">Fluxo de caixa, receitas e despesas</p></div>
+      <div class="screen-actions">
+        <select class="select-period"><option>Junho 2026</option><option>Maio 2026</option><option>Abril 2026</option></select>
+        <button class="btn btn-outline"><i class="fa-solid fa-file-invoice-dollar"></i> Gerar DRE</button>
+        <button class="btn btn-primary" onclick="showModal('lancamentoModal')"><i class="fa-solid fa-plus"></i> Lançamento</button>
+      </div>
+    </div>
+
+    <div class="fin-kpis">
+      <div class="fin-kpi green">
+        <div class="fin-kpi-icon"><i class="fa-solid fa-arrow-trend-up"></i></div>
+        <div><div class="fin-kpi-value">R$ 142.850</div><div class="fin-kpi-label">Receita Mensal</div></div>
+      </div>
+      <div class="fin-kpi red">
+        <div class="fin-kpi-icon"><i class="fa-solid fa-arrow-trend-down"></i></div>
+        <div><div class="fin-kpi-value">R$ 89.320</div><div class="fin-kpi-label">Despesas Mensais</div></div>
+      </div>
+      <div class="fin-kpi blue">
+        <div class="fin-kpi-icon"><i class="fa-solid fa-scale-balanced"></i></div>
+        <div><div class="fin-kpi-value">R$ 53.530</div><div class="fin-kpi-label">Lucro Líquido</div></div>
+      </div>
+      <div class="fin-kpi orange">
+        <div class="fin-kpi-icon"><i class="fa-solid fa-percent"></i></div>
+        <div><div class="fin-kpi-value">37,5%</div><div class="fin-kpi-label">Margem de Lucro</div></div>
+      </div>
+    </div>
+
+    <div class="fin-layout">
+      <div class="fin-chart-area">
+        <div class="card">
+          <div class="card-header"><h3>Fluxo de Caixa — Junho</h3></div>
+          <canvas id="chartFluxo" height="120"></canvas>
+        </div>
+        <div class="fin-dre card">
+          <div class="card-header"><h3>DRE Simplificado</h3><span class="period-tag">Junho 2026</span></div>
+          <table class="dre-table">
+            <tr class="dre-head"><td>Receita Bruta</td><td>R$ 142.850</td></tr>
+            <tr><td>(-) Devoluções / Descontos</td><td class="neg">-R$ 2.140</td></tr>
+            <tr class="dre-sub"><td>= Receita Líquida</td><td>R$ 140.710</td></tr>
+            <tr><td>(-) Custo dos Produtos (CMV)</td><td class="neg">-R$ 42.213</td></tr>
+            <tr class="dre-sub"><td>= Lucro Bruto</td><td>R$ 98.497</td></tr>
+            <tr><td>(-) Despesas Operacionais</td><td class="neg">-R$ 31.200</td></tr>
+            <tr><td>(-) Folha de Pagamento</td><td class="neg">-R$ 18.400</td></tr>
+            <tr><td>(-) Aluguel / Utilities</td><td class="neg">-R$ 8.500</td></tr>
+            <tr class="dre-sub dre-result"><td>= Lucro Líquido</td><td class="pos">R$ 40.397</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="fin-lancamentos">
+        <div class="card">
+          <div class="card-header"><h3>Lançamentos Recentes</h3></div>
+          <div class="lancamentos-list" id="lancamentosList"></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><h3>Contas a Pagar</h3></div>
+          <div class="contas-list">
+            <div class="conta-item"><div class="conta-info"><strong>Fornecedor Carnes Ltda</strong><small>Vence 10/06</small></div><div class="conta-valor neg">R$ 4.820</div><button class="btn btn-sm btn-primary">Pagar</button></div>
+            <div class="conta-item"><div class="conta-info"><strong>Aluguel Salão</strong><small>Vence 15/06</small></div><div class="conta-valor neg">R$ 5.500</div><button class="btn btn-sm btn-primary">Pagar</button></div>
+            <div class="conta-item vencida"><div class="conta-info"><strong>Energia Elétrica</strong><small class="overdue">Venceu 05/06</small></div><div class="conta-valor neg">R$ 1.240</div><button class="btn btn-sm btn-danger">Urgente</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== RELATÓRIOS ===== -->
+  <section class="screen" id="screen-relatorios">
+    <div class="screen-header">
+      <div><h1>Relatórios</h1><p class="screen-subtitle">Análises e insights do seu negócio</p></div>
+      <div class="screen-actions">
+        <input type="date" class="date-input" value="2026-06-01">
+        <span>até</span>
+        <input type="date" class="date-input" value="2026-06-06">
+        <button class="btn btn-primary"><i class="fa-solid fa-filter"></i> Filtrar</button>
+      </div>
+    </div>
+
+    <div class="rel-cards-grid">
+      <div class="rel-card" onclick="showModal('relVendasModal')"><i class="fa-solid fa-chart-line"></i><h4>Vendas por Período</h4><p>Análise detalhada de receita</p></div>
+      <div class="rel-card" onclick="showModal('relVendasModal')"><i class="fa-solid fa-trophy"></i><h4>Produtos Mais Vendidos</h4><p>Ranking de desempenho</p></div>
+      <div class="rel-card" onclick="showModal('relVendasModal')"><i class="fa-solid fa-users"></i><h4>Análise de Clientes</h4><p>Retenção e ticket médio</p></div>
+      <div class="rel-card" onclick="showModal('relVendasModal')"><i class="fa-solid fa-motorcycle"></i><h4>Performance de Delivery</h4><p>Tempo e satisfação</p></div>
+      <div class="rel-card" onclick="showModal('relVendasModal')"><i class="fa-solid fa-box"></i><h4>Relatório de Estoque</h4><p>Giro e perdas</p></div>
+      <div class="rel-card" onclick="showModal('relVendasModal')"><i class="fa-solid fa-person-chalkboard"></i><h4>Desempenho de Equipe</h4><p>Metas e produtividade</p></div>
+    </div>
+
+    <div class="rel-charts-row">
+      <div class="card" style="flex:2">
+        <div class="card-header"><h3>Vendas — Últimos 30 Dias</h3><button class="btn btn-outline btn-sm"><i class="fa-solid fa-download"></i> CSV</button></div>
+        <canvas id="chartRel30" height="100"></canvas>
+      </div>
+      <div class="card" style="flex:1">
+        <div class="card-header"><h3>Formas de Pagamento</h3></div>
+        <canvas id="chartPagamentos"></canvas>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><h3>Vendas por Hora — Hoje</h3></div>
+      <canvas id="chartHoras" height="80"></canvas>
+    </div>
+  </section>
+
+  <!-- ===== CONFIGURAÇÕES ===== -->
+  <section class="screen" id="screen-configuracoes">
+    <div class="screen-header">
+      <div><h1>Configurações</h1><p class="screen-subtitle">Personalize o sistema</p></div>
+      <div class="screen-actions">
+        <button class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Salvar Alterações</button>
+      </div>
+    </div>
+
+    <div class="config-layout">
+      <div class="config-sidebar-nav">
+        <button class="cfg-nav active" onclick="showConfig(this,'cfg-geral')"><i class="fa-solid fa-store"></i> Dados do Restaurante</button>
+        <button class="cfg-nav" onclick="showConfig(this,'cfg-usuarios')"><i class="fa-solid fa-users-cog"></i> Usuários e Permissões</button>
+        <button class="cfg-nav" onclick="showConfig(this,'cfg-fiscal')"><i class="fa-solid fa-file-invoice"></i> Fiscal / Nota Fiscal</button>
+        <button class="cfg-nav" onclick="showConfig(this,'cfg-integracoes')"><i class="fa-solid fa-plug"></i> Integrações</button>
+        <button class="cfg-nav" onclick="showConfig(this,'cfg-impressoras')"><i class="fa-solid fa-print"></i> Impressoras</button>
+        <button class="cfg-nav" onclick="showConfig(this,'cfg-notificacoes')"><i class="fa-solid fa-bell"></i> Notificações</button>
+      </div>
+      <div class="config-content">
+        <div class="cfg-panel active" id="cfg-geral">
+          <h3>Dados do Restaurante</h3>
+          <div class="form-grid">
+            <div class="form-group"><label>Nome do Restaurante</label><input type="text" value="Restaurante do Chef" class="form-input"></div>
+            <div class="form-group"><label>CNPJ</label><input type="text" value="12.345.678/0001-99" class="form-input"></div>
+            <div class="form-group"><label>Telefone</label><input type="text" value="(11) 9 9999-0000" class="form-input"></div>
+            <div class="form-group"><label>E-mail</label><input type="email" value="contato@restaurante.com.br" class="form-input"></div>
+            <div class="form-group full"><label>Endereço</label><input type="text" value="Rua das Flores, 123 — São Paulo, SP" class="form-input"></div>
+            <div class="form-group"><label>Horário de Abertura</label><input type="time" value="11:00" class="form-input"></div>
+            <div class="form-group"><label>Horário de Fechamento</label><input type="time" value="23:00" class="form-input"></div>
+            <div class="form-group"><label>Taxa de Entrega Padrão (R$)</label><input type="number" value="5.00" class="form-input"></div>
+            <div class="form-group"><label>Raio de Entrega (km)</label><input type="number" value="10" class="form-input"></div>
+          </div>
+          <h3 style="margin-top:32px">Logo e Aparência</h3>
+          <div class="logo-upload"><div class="logo-preview"><i class="fa-solid fa-utensils"></i></div><button class="btn btn-outline">Alterar Logo</button></div>
+          <div class="form-group" style="margin-top:16px"><label>Tema de Cores</label>
+            <div class="color-swatches">
+              <div class="swatch active" style="background:#f97316"></div>
+              <div class="swatch" style="background:#e11d48"></div>
+              <div class="swatch" style="background:#8b5cf6"></div>
+              <div class="swatch" style="background:#0ea5e9"></div>
+              <div class="swatch" style="background:#10b981"></div>
+            </div>
+          </div>
+        </div>
+        <div class="cfg-panel" id="cfg-usuarios">
+          <h3>Usuários e Permissões</h3>
+          <table class="data-table">
+            <thead><tr><th>Usuário</th><th>E-mail</th><th>Perfil</th><th>Status</th><th>Ações</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Thales Fratar</strong></td><td>thalesfratar@gmail.com</td><td><span class="role-badge admin">Admin</span></td><td><span class="status-badge done">Ativo</span></td><td><button class="btn btn-sm btn-outline">Editar</button></td></tr>
+              <tr><td><strong>Maria Cozinha</strong></td><td>maria@restaurante.com</td><td><span class="role-badge chef">Cozinha</span></td><td><span class="status-badge done">Ativo</span></td><td><button class="btn btn-sm btn-outline">Editar</button></td></tr>
+              <tr><td><strong>João Garçom</strong></td><td>joao@restaurante.com</td><td><span class="role-badge garcom">Garçom</span></td><td><span class="status-badge done">Ativo</span></td><td><button class="btn btn-sm btn-outline">Editar</button></td></tr>
+              <tr><td><strong>Ana Caixa</strong></td><td>ana@restaurante.com</td><td><span class="role-badge caixa">Caixa</span></td><td><span class="status-badge new">Inativo</span></td><td><button class="btn btn-sm btn-outline">Editar</button></td></tr>
+            </tbody>
+          </table>
+          <button class="btn btn-primary" style="margin-top:16px"><i class="fa-solid fa-user-plus"></i> Adicionar Usuário</button>
+        </div>
+        <div class="cfg-panel" id="cfg-fiscal">
+          <h3>Configurações Fiscais</h3>
+          <div class="form-grid">
+            <div class="form-group"><label>Regime Tributário</label><select class="form-input"><option>Simples Nacional</option><option>Lucro Presumido</option><option>Lucro Real</option></select></div>
+            <div class="form-group"><label>Ambiente NF-e</label><select class="form-input"><option>Homologação</option><option>Produção</option></select></div>
+            <div class="form-group"><label>Certificado Digital</label><input type="file" class="form-input"></div>
+            <div class="form-group"><label>Série NFCe</label><input type="number" value="1" class="form-input"></div>
+          </div>
+        </div>
+        <div class="cfg-panel" id="cfg-integracoes">
+          <h3>Integrações</h3>
+          <div class="integrations-grid">
+            <div class="integration-card active"><div class="int-logo">🛵</div><div><strong>iFood</strong><small>Integrado — 142 pedidos este mês</small></div><span class="status-badge done">Ativo</span></div>
+            <div class="integration-card"><div class="int-logo">🟣</div><div><strong>Rappi</strong><small>Não configurado</small></div><button class="btn btn-sm btn-primary">Conectar</button></div>
+            <div class="integration-card"><div class="int-logo">💳</div><div><strong>Stone / Pagar.me</strong><small>Gateway de pagamento</small></div><button class="btn btn-sm btn-primary">Conectar</button></div>
+            <div class="integration-card active"><div class="int-logo">📊</div><div><strong>WhatsApp Business</strong><small>Notificações ativas</small></div><span class="status-badge done">Ativo</span></div>
+          </div>
+        </div>
+        <div class="cfg-panel" id="cfg-impressoras">
+          <h3>Impressoras</h3>
+          <div class="printer-list">
+            <div class="printer-item"><i class="fa-solid fa-print"></i><div><strong>Cozinha — Epson TM-T20X</strong><small>192.168.1.10</small></div><span class="status-badge done">Online</span></div>
+            <div class="printer-item"><i class="fa-solid fa-print"></i><div><strong>Caixa — Bematech MP-4200</strong><small>USB</small></div><span class="status-badge done">Online</span></div>
+            <div class="printer-item"><i class="fa-solid fa-print"></i><div><strong>Bar — Elgin i9</strong><small>192.168.1.12</small></div><span class="status-badge new">Offline</span></div>
+          </div>
+          <button class="btn btn-outline" style="margin-top:16px"><i class="fa-solid fa-plus"></i> Adicionar Impressora</button>
+        </div>
+        <div class="cfg-panel" id="cfg-notificacoes">
+          <h3>Notificações</h3>
+          <div class="notif-settings">
+            <div class="notif-item"><div><strong>Novo pedido recebido</strong><small>Som + notificação na tela</small></div><label class="toggle"><input type="checkbox" checked><span></span></label></div>
+            <div class="notif-item"><div><strong>Estoque crítico</strong><small>Alerta quando abaixo do mínimo</small></div><label class="toggle"><input type="checkbox" checked><span></span></label></div>
+            <div class="notif-item"><div><strong>Pedido atrasado</strong><small>Alerta após 30 minutos</small></div><label class="toggle"><input type="checkbox" checked><span></span></label></div>
+            <div class="notif-item"><div><strong>Relatório diário por e-mail</strong><small>Enviado às 23h</small></div><label class="toggle"><input type="checkbox"><span></span></label></div>
+            <div class="notif-item"><div><strong>Nova avaliação</strong><small>Notificar ao receber avaliação</small></div><label class="toggle"><input type="checkbox" checked><span></span></label></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ========== MODALS ========== -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal()"></div>
+
+<!-- Modal: Novo Produto -->
+<div class="modal" id="produtoModal">
+  <div class="modal-header"><h3>Novo Produto</h3><button onclick="closeModal()" class="modal-close"><i class="fa-solid fa-xmark"></i></button></div>
+  <div class="modal-body">
+    <div class="form-grid">
+      <div class="form-group full"><label>Nome do Produto</label><input type="text" placeholder="Ex: X-Burguer Especial" class="form-input"></div>
+      <div class="form-group"><label>Categoria</label><select class="form-input"><option>Lanches</option><option>Pizzas</option><option>Bebidas</option><option>Pratos</option><option>Sobremesas</option></select></div>
+      <div class="form-group"><label>Preço (R$)</label><input type="number" placeholder="0,00" class="form-input"></div>
+      <div class="form-group"><label>Custo (R$)</label><input type="number" placeholder="0,00" class="form-input"></div>
+      <div class="form-group"><label>Tempo de preparo (min)</label><input type="number" placeholder="15" class="form-input"></div>
+      <div class="form-group full"><label>Descrição</label><textarea class="form-input" rows="3" placeholder="Descreva os ingredientes..."></textarea></div>
+      <div class="form-group"><label>Disponível no Delivery</label><label class="toggle" style="margin-top:8px"><input type="checkbox" checked><span></span></label></div>
+      <div class="form-group"><label>Ativo</label><label class="toggle" style="margin-top:8px"><input type="checkbox" checked><span></span></label></div>
+    </div>
+  </div>
+  <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal()">Cancelar</button><button class="btn btn-primary">Salvar Produto</button></div>
+</div>
+
+<!-- Modal: Entrada de Estoque -->
+<div class="modal" id="estoqueModal">
+  <div class="modal-header"><h3>Entrada de Estoque</h3><button onclick="closeModal()" class="modal-close"><i class="fa-solid fa-xmark"></i></button></div>
+  <div class="modal-body">
+    <div class="form-grid">
+      <div class="form-group full"><label>Ingrediente</label><input type="text" placeholder="Buscar ingrediente..." class="form-input"></div>
+      <div class="form-group"><label>Quantidade</label><input type="number" placeholder="0" class="form-input"></div>
+      <div class="form-group"><label>Unidade</label><select class="form-input"><option>kg</option><option>g</option><option>L</option><option>ml</option><option>un</option><option>caixa</option></select></div>
+      <div class="form-group"><label>Custo Unitário (R$)</label><input type="number" placeholder="0,00" class="form-input"></div>
+      <div class="form-group"><label>Fornecedor</label><select class="form-input"><option>Carnes Ltda</option><option>Frios Sul</option><option>Distribuidora X</option></select></div>
+      <div class="form-group"><label>Data de Validade</label><input type="date" class="form-input"></div>
+      <div class="form-group full"><label>Observações</label><input type="text" placeholder="NF, lote, etc..." class="form-input"></div>
+    </div>
+  </div>
+  <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal()">Cancelar</button><button class="btn btn-primary"><i class="fa-solid fa-arrow-down"></i> Registrar Entrada</button></div>
+</div>
+
+<!-- Modal: Novo Lançamento Financeiro -->
+<div class="modal" id="lancamentoModal">
+  <div class="modal-header"><h3>Novo Lançamento</h3><button onclick="closeModal()" class="modal-close"><i class="fa-solid fa-xmark"></i></button></div>
+  <div class="modal-body">
+    <div class="form-grid">
+      <div class="form-group full"><label>Tipo</label>
+        <div class="radio-group">
+          <label><input type="radio" name="tipo" value="receita" checked> Receita</label>
+          <label><input type="radio" name="tipo" value="despesa"> Despesa</label>
+        </div>
+      </div>
+      <div class="form-group"><label>Descrição</label><input type="text" placeholder="Ex: Venda do dia..." class="form-input"></div>
+      <div class="form-group"><label>Valor (R$)</label><input type="number" placeholder="0,00" class="form-input"></div>
+      <div class="form-group"><label>Categoria</label><select class="form-input"><option>Vendas</option><option>Aluguel</option><option>Fornecedores</option><option>Folha</option><option>Manutenção</option><option>Outros</option></select></div>
+      <div class="form-group"><label>Data</label><input type="date" class="form-input"></div>
+      <div class="form-group"><label>Forma</label><select class="form-input"><option>Dinheiro</option><option>PIX</option><option>Transferência</option><option>Cartão</option></select></div>
+    </div>
+  </div>
+  <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal()">Cancelar</button><button class="btn btn-primary">Registrar</button></div>
+</div>
+
+<!-- Modal: Novo Cliente -->
+<div class="modal" id="clienteModal">
+  <div class="modal-header"><h3>Novo Cliente</h3><button onclick="closeModal()" class="modal-close"><i class="fa-solid fa-xmark"></i></button></div>
+  <div class="modal-body">
+    <div class="form-grid">
+      <div class="form-group full"><label>Nome Completo</label><input type="text" placeholder="Nome do cliente" class="form-input"></div>
+      <div class="form-group"><label>Telefone / WhatsApp</label><input type="tel" placeholder="(11) 9 9999-0000" class="form-input"></div>
+      <div class="form-group"><label>E-mail</label><input type="email" placeholder="email@exemplo.com" class="form-input"></div>
+      <div class="form-group full"><label>Endereço (Delivery)</label><input type="text" placeholder="Rua, número, bairro..." class="form-input"></div>
+      <div class="form-group"><label>CPF</label><input type="text" placeholder="000.000.000-00" class="form-input"></div>
+      <div class="form-group"><label>Data de Nascimento</label><input type="date" class="form-input"></div>
+    </div>
+  </div>
+  <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal()">Cancelar</button><button class="btn btn-primary">Salvar Cliente</button></div>
+</div>
+
+<!-- Modal: Reserva -->
+<div class="modal" id="reservaModal">
+  <div class="modal-header"><h3>Nova Reserva</h3><button onclick="closeModal()" class="modal-close"><i class="fa-solid fa-xmark"></i></button></div>
+  <div class="modal-body">
+    <div class="form-grid">
+      <div class="form-group full"><label>Cliente</label><input type="text" placeholder="Nome do cliente" class="form-input"></div>
+      <div class="form-group"><label>Telefone</label><input type="tel" placeholder="(11) 9 9999-0000" class="form-input"></div>
+      <div class="form-group"><label>Data</label><input type="date" class="form-input"></div>
+      <div class="form-group"><label>Horário</label><input type="time" class="form-input"></div>
+      <div class="form-group"><label>Mesa</label><select class="form-input" id="reservaMesa"></select></div>
+      <div class="form-group"><label>Número de Pessoas</label><input type="number" min="1" max="20" value="2" class="form-input"></div>
+      <div class="form-group full"><label>Observações</label><input type="text" placeholder="Aniversário, preferências..." class="form-input"></div>
+    </div>
+  </div>
+  <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal()">Cancelar</button><button class="btn btn-primary"><i class="fa-solid fa-calendar-check"></i> Confirmar Reserva</button></div>
+</div>
+
+<!-- Modal: Venda Finalizada -->
+<div class="modal" id="vendaModal">
+  <div class="modal-header success-header"><h3><i class="fa-solid fa-check-circle"></i> Venda Finalizada!</h3><button onclick="closeModal()" class="modal-close"><i class="fa-solid fa-xmark"></i></button></div>
+  <div class="modal-body" style="text-align:center">
+    <div class="success-icon"><i class="fa-solid fa-check"></i></div>
+    <h2 id="vendaTotalModal">R$ 0,00</h2>
+    <p>Pagamento recebido com sucesso</p>
+    <div style="margin-top:16px;display:flex;gap:8px;justify-content:center">
+      <button class="btn btn-outline"><i class="fa-solid fa-print"></i> Imprimir Cupom</button>
+      <button class="btn btn-outline"><i class="fa-brands fa-whatsapp"></i> Enviar WhatsApp</button>
+    </div>
+  </div>
+  <div class="modal-footer"><button class="btn btn-primary btn-block" onclick="closeModal()">Novo Atendimento</button></div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
